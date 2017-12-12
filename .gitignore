@@ -1,0 +1,5 @@
+*.pyc	
+images/
+thumbnail/
+res*
+test*.png
