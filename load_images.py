@@ -31,21 +31,33 @@ def get_data():
 
     return train, test
 
-def get_data_noaug():
+def get_data_noaug(directory='thumbnail/', keep_grayscale=False):
     cases = []
-    for f in os.listdir("thumbnail"):
-        im = Image.open("thumbnail/" + f)
+    for f in os.listdir(directory):
+        im = Image.open(directory + "/" + f)
         pixels = np.array(im, dtype='float32')
 
-        # cut off Alpha channel
-        pixels = pixels[:,:,:-1]
+        if len(pixels.shape) == 2:
+            if not keep_grayscale:
+                continue
+            pixels = pixels.reshape(pixels.shape + (1,))
+
+        try:
+            # cut off Alpha channel
+            if pixels.shape[-1] != 1:
+                pixels = pixels[:,:,:-1]
+        except:
+            print f
+        # drop grayscale images
+        if pixels.shape[-1] == 1:
+            if not keep_grayscale:
+                continue
+            pixels = np.reshape(np.stack((pixels,) * 3, axis=-1), pixels.shape[:-1] + (3,))
+
 
         # scale to [0..1]
         pixels /= 256
 
-        # drop grayscale images
-        if pixels.shape == (256, 256, 1):
-            pixels = np.stack((pixels,) * 3)
         cases.append(pixels)
 #        cases.append(np.fliplr(pixels))
 

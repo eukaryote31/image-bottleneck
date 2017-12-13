@@ -5,34 +5,34 @@ import numpy as np
 import sys
 from load_images import get_data_noaug
 
-print "Computing mean image"
+job = sys.argv[1]
 
-data = get_data_noaug()
-print data[0][128]
-data = data.astype(dtype='float32')
-print "data shape", data.shape
-print "data type", data.dtype
+if job == 'meanimg':
+    print "Computing mean image"
 
-mpx = np.mean(data, axis=0)
+    data = get_data_noaug('crypto-icons')
+    print "data shape", data.shape
+    print "data type", data.dtype
 
-mpx *= 255
-mpx = mpx.astype(dtype='uint8')
-print "mean shape", mpx.shape
-print "mean type", mpx.dtype
+    mpx = np.mean(data, axis=0)
 
-meanimg = Image.fromarray(mpx)
-meanimg.save('mean.png')
+    mpx *= 255
+    mpx = mpx.astype(dtype='uint8')
+    print "mean shape", mpx.shape
+    print "mean type", mpx.dtype
 
-sys.exit(0)
+    meanimg = Image.fromarray(mpx)
+    meanimg.save('mean.png')
 
-model = model.load_file_model("model-anime.h5")
-i = img_to_array(Image.open("test2.png"))
-i = i[:,:,:3]
-i = i.reshape((1,) + i.shape)
-i /= 256
+elif job == 'validate':
+    model = model.load_file_model("model-anime.h5")
+    i = img_to_array(Image.open(sys.argv[2]))
+    i = i[:,:,:3]
+    i = i.reshape((1,) + i.shape)
+    i /= 256
 
-y = model.predict(i) * 255
-y = y.astype(dtype='uint8')
+    y = model.predict(i) * 255
+    y = y.astype(dtype='uint8')
 
-predimg = Image.fromarray(y[0])
-predimg.save('res.png')
+    predimg = Image.fromarray(y[0])
+    predimg.save('res.png')
