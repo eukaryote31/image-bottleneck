@@ -59,6 +59,6 @@ def get_data_noaug(directory='thumbnail/', keep_grayscale=False):
         pixels /= 256
 
         cases.append(pixels)
-#        cases.append(np.fliplr(pixels))
+        cases.append(np.fliplr(pixels))
 
     return np.array(cases)
